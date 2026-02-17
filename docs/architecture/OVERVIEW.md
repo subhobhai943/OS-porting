@@ -227,3 +227,14 @@ The 8259 PIC is remapped:
 - **Kernel Version**: 0.1.0
 - **Codename**: Genesis
 - **Output Format**: ELF64-x86-64
+
+## ARMv7 (32-bit) Port Status
+
+AAAos now includes an **experimental ARMv7-A bring-up path** focused on producing a minimal kernel ELF for early platform work:
+
+- `kernel/arch/armv7/boot.S` provides `_start`, stack setup, and a low-power idle loop.
+- `kernel/main_armv7.c` provides `kernel_main_armv7()` as a minimal C entrypoint.
+- `kernel/linker_armv7.ld` provides a 32-bit ARM linker layout and stack symbol definitions.
+- `make kernel-armv7` builds `build/armv7/kernel-armv7.elf` when `arm-none-eabi-*` tools are installed.
+
+This is an initial port scaffold; device drivers, MMU setup, interrupt controller support, and board-specific boot integration are still pending.

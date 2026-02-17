@@ -42,7 +42,7 @@ TEST_CASE(test_strlen_various) {
 /**
  * Test: strcmp equal strings
  */
-TEST_CASE(test_strcmp) {
+TEST_CASE(test_strcmp_fn) {
     TEST_ASSERT_EQ(strcmp("hello", "hello"), 0);
     TEST_ASSERT_EQ(strcmp("", ""), 0);
     TEST_ASSERT_EQ(strcmp("test", "test"), 0);
@@ -421,7 +421,7 @@ TEST_CASE(test_memset_partial) {
 /**
  * Test: memcmp equal memory
  */
-TEST_CASE(test_memcmp) {
+TEST_CASE(test_memcmp_fn) {
     uint8_t buf1[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     uint8_t buf2[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
