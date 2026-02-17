@@ -150,13 +150,39 @@ test:
 
 .PHONY: test-mm
 test-mm:
-	@echo "Running memory manager tests..."
-	$(MAKE) -C tests unit-mm
+	@echo "Memory manager unit tests are not wired in tests/Makefile yet"
 
 .PHONY: test-fs
 test-fs:
-	@echo "Running filesystem tests..."
-	$(MAKE) -C tests unit-fs
+	@echo "Filesystem unit tests are not wired in tests/Makefile yet"
+
+# Experimental ARMv7 (32-bit) kernel port build
+ARMV7_PREFIX ?= arm-none-eabi-
+ARMV7_CC := $(ARMV7_PREFIX)gcc
+ARMV7_LD := $(ARMV7_PREFIX)ld
+ARMV7_AS := $(ARMV7_PREFIX)as
+
+ARMV7_CFLAGS := -ffreestanding -fno-stack-protector -nostdlib \
+	-marm -march=armv7-a -mabi=aapcs -Wall -Wextra -Werror -O2 \
+	-I$(KERNEL_DIR)/include -I$(KERNEL_DIR)/arch/armv7/include
+
+ARMV7_BUILD_DIR := $(BUILD_DIR)/armv7
+ARMV7_OBJS := $(ARMV7_BUILD_DIR)/kernel/arch/armv7/boot.o \
+	$(ARMV7_BUILD_DIR)/kernel/main_armv7.o
+ARMV7_KERNEL := $(ARMV7_BUILD_DIR)/kernel-armv7.elf
+
+.PHONY: kernel-armv7
+kernel-armv7:
+	@mkdir -p $(ARMV7_BUILD_DIR)/kernel/arch/armv7
+	@if ! command -v $(ARMV7_CC) >/dev/null 2>&1; then \
+		echo "ARMv7 toolchain not found: $(ARMV7_CC)"; \
+		echo "Install $(ARMV7_PREFIX)gcc/binutils and re-run 'make kernel-armv7'"; \
+		exit 1; \
+	fi
+	$(ARMV7_AS) kernel/arch/armv7/boot.S -o $(ARMV7_BUILD_DIR)/kernel/arch/armv7/boot.o
+	$(ARMV7_CC) $(ARMV7_CFLAGS) -c kernel/main_armv7.c -o $(ARMV7_BUILD_DIR)/kernel/main_armv7.o
+	$(ARMV7_LD) -nostdlib -T kernel/linker_armv7.ld -o $(ARMV7_KERNEL) $(ARMV7_OBJS)
+	@echo "ARMv7 kernel built: $(ARMV7_KERNEL)"
 
 # Help
 .PHONY: help
